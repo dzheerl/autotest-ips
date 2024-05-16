@@ -2,6 +2,9 @@
 Для работы необходимо вытянуть зависимости командой 
 `npm ci`
 
+# Запуск
+`npx wdio ./src/wdio.conf.ts`
+
 # Coding Conventions
 ## Имена локальных констант/переменных
 - camelCase
