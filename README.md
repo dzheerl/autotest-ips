@@ -5,6 +5,9 @@
 # Запуск
 `npx wdio ./src/wdio.conf.ts`
 
+## Обновление chromedriver
+`npm i chromedriver@latest --save-dev`
+
 # Coding Conventions
 ## Имена локальных констант/переменных
 - camelCase
