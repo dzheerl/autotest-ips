@@ -17,6 +17,6 @@ class settingsPage extends PageObject {
         await this.getProfileNameForm().waitForDisplayed({
             timeoutMsg: 'Profile Name field was not displayed'
         })
-        await this.getProfileNameForm().setValue(getRandom(256))
+        await this.getProfileNameForm().setValue(profileName)
     }
 }
