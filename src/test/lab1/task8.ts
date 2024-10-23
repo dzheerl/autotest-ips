@@ -1,9 +1,3 @@
-async function skipPopups(browser: WebdriverIO.Browser, userID: string): Promise<void> {
-    await browser.execute(ID => {
-        localStorage.setItem(`ispring::learn::coursesPage::welcomePopup::${ID}`, '1')
-    }, userID)
-}
-
 function getRandom(lengthStr: number): string {
     const alphabetArray: string[] = [
         // Кириллица (заглавные)
@@ -41,8 +35,3 @@ function getRandom(lengthStr: number): string {
 }
 
 console.log("Random String: " + getRandom(161))
-
-
-export {
-    skipPopups, getRandom
-}
