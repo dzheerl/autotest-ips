@@ -4,12 +4,13 @@ const auth: {
     password: string,
     invalidPassword: string,
 } = {
-    login: 'TestUserIps',
+    login: 'TestUserIps2',
     email: 'dzheerl2@gmail.com',
-    password: 'Qwerty123TestIps!',
+    password: 'OlegChamp123',
     invalidPassword: 'Qwerty123'
 }
 
 export {
     auth,
 }
+

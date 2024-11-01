@@ -53,12 +53,8 @@ class LoginPage extends PageObject {
         })
     }
 
-    public async open(): Promise<void> {
-        await this.browser.url(this.url)
-    }
 
     public async login(auth: { login: string, password: string }): Promise<void> {
-        await this.open()
         await this.waitForDisplayedLoginForm()
         await this.setLogin(auth.login)
         await this.setPassword(auth.password)

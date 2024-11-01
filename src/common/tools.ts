@@ -1,3 +1,5 @@
+import { ChainablePromiseElement } from 'webdriverio'
+
 async function skipPopups(browser: WebdriverIO.Browser, userID: string): Promise<void> {
     await browser.execute(ID => {
         localStorage.setItem(`ispring::learn::coursesPage::welcomePopup::${ID}`, '1')
@@ -40,9 +42,37 @@ function getRandom(lengthStr: number): string {
     return str
 }
 
-console.log("Random String: " + getRandom(161))
 
+class UploadFile {
+    private browser: WebdriverIO.Browser
+
+    constructor(browser: WebdriverIO.Browser) {
+        this.browser = browser
+    }
+
+    public async uploadFile(filePath: string): Promise<void> {
+        await this.getInputFile().waitForExist({
+            timeoutMsg: 'File input field was not existed',
+        })
+        await showHiddenFileInput(this.browser)
+        const file: string = await this.browser.uploadFile(filePath)
+        await this.getInputFile().setValue(file)
+    }
+
+    private getInputFile(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('[type="file"]')
+    }
+}
+
+async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> {
+    await browser.execute(() => {
+        const htmlElement = document.querySelector('[type="file"]') as HTMLElement
+        htmlElement.style.cssText = 'display:block !important; opacity: 1; position: inherit;'
+    })
+}
+
+console.log(getRandom(512))
 
 export {
-    skipPopups, getRandom
+    skipPopups, getRandom, UploadFile, showHiddenFileInput
 }
