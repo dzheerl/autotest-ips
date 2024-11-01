@@ -1,13 +1,3 @@
-//*[@id="login"]
-//*[@id="login_field"]
-//*[@id="password"]
-//*[@type="submit"]
-//*[@data-login="TestUserIps"]
-//Qwerty123TestIps!
-
-//*[@id="js-flash-container"]
-//*[@id='forgot-password']
-
 import { auth } from "../../secrets/passwords"
 
 describe('Login from', () => {
