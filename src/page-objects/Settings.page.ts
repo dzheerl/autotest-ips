@@ -1,11 +1,6 @@
 import { ChainablePromiseElement } from 'webdriverio'
 import { PageObject } from './PageObjects'
 
-enum Promouns {
-    defaultValue = 0,
-    theyThem = 1
-}
-
 class SettingsPage extends PageObject {
     protected url: string = 'https://github.com/settings/profile'
     // нужно вынести в enum  в другой файл
@@ -43,8 +38,11 @@ class SettingsPage extends PageObject {
     }
 
     public async getProfileNameValue(): Promise<string> {
-        let profileName: string = await this.getProfileNameForm().getValue()
-        return profileName
+        await this.getProfileNameForm().waitForDisplayed({
+            timeoutMsg: 'Profile Name field was not displayed'
+        })
+        return await this.getProfileNameForm().getValue()
+
     }
 
     public async getSelectPublicEmailValue(): Promise<string> {
@@ -66,6 +64,7 @@ class SettingsPage extends PageObject {
         await this.getPronounsSelect().selectByIndex(indexElement)
     }
 
+
     public async getPronounsSelectValue(): Promise<string> {
         let selectPronouns: string = await this.getPronounsSelect().getValue()
         return selectPronouns
@@ -78,7 +77,7 @@ class SettingsPage extends PageObject {
         await this.getPronounsCustomField().setValue(CustomValue)
     }
 
-    public async clickSubmitUpdateProfile(): Promise<void> {
+    public async saveUpdateProfile(): Promise<void> {
         await this.getSubmitUpdateProfile().waitForDisplayed({ // проверку на кликабельность
             timeoutMsg: 'Submit field was not displayed'
         })
@@ -118,14 +117,15 @@ class SettingsPage extends PageObject {
         return await this.getAlertSuccesUpload().getText()
     }
 
-    public async getTextAlertFailedUpload(): Promise<string> {
-        return await this.getAlertFailedUpload().getText()
-    }
+    // public async getTextAlertFailedUpload(): Promise<string> {
+    //     return await this.getAlertFailedUpload().getText()
+    // }
 
-    public async waitForDisplayedAlertFailedUpload(): Promise<void> {
+    public async isDisplayedAlertFailedUpload(): Promise<void> {
         await this.getAlertFailedUpload().waitForDisplayed({
             timeoutMsg: 'Alert Failed Upload was not displayed',
         })
+        await this.getAlertFailedUpload().isDisplayed()
     }
 
     public async uploadFile(filePath: string): Promise<void> {
@@ -135,6 +135,26 @@ class SettingsPage extends PageObject {
         await showHiddenFileInput(this.browser)
         const file: string = await this.browser.uploadFile(filePath)
         await this.getInputFile().setValue(file)
+    }
+
+    public async getContextMenu(): Promise<void> {
+        await await this.getContextMenuElement().waitForClickable({ // нужно ли проверять кликабельнось если это див с курсор=поинтер?
+            timeoutMsg: 'Conteext menu was not clickable' // исправить сообщение 
+        })
+        await this.getContextMenuElement().click()
+    }
+
+    public async checkRemoveButtonExists(): Promise<void> {
+        await this.getRemoveButton().isExisting()
+    }
+
+    public async removePhoto(): Promise<void> {
+        await this.getContextMenu()
+        await await this.getRemoveButton().waitForClickable({ //клабельность
+            timeoutMsg: 'Remove button was not clickable' // исправить сообщение 
+        })
+        await this.getRemoveButton().click()
+        await this.browser.acceptAlert()
     }
 
     private getInputFile(): ChainablePromiseElement<WebdriverIO.Element> {
@@ -184,6 +204,14 @@ class SettingsPage extends PageObject {
     private getAlertFailedUpload(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$('//div[contains(text(), "We only support PNG, GIF, or JPG pictures.")]')
     }
+
+    private getContextMenuElement(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@class="avatar-upload"]/details/summary')
+    }
+
+    private getRemoveButton(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[contains(@class, "dropdown-menu")]/form/button')
+    }
 }
 
 async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> {
@@ -194,6 +222,5 @@ async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> 
 }
 
 export {
-    Promouns,
     SettingsPage
 }

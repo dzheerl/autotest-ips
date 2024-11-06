@@ -1,7 +1,7 @@
 import { LoginPage } from "../../src/page-objects/Login.page"
 import { auth } from "../../src/secrets/passwords"
 import { IssueData, validIssueData } from "../data/issues.data"
-import { IssuesPage } from "../page-object/Issues.page"
+import { IssuesPage } from "../page-objects/Issues.page"
 import { IssueModel, createIssuesModel } from "../model/model.issues"
 
 
