@@ -1,5 +1,5 @@
 import { ChainablePromiseElement } from 'webdriverio'
-import { PageObject } from './PageObjects'
+import { PageObject } from '../../page-objects/PageObjects'
 
 class ProfilePage extends PageObject {
     protected url: string = 'https://github.com/TestUserIps2'
@@ -15,10 +15,6 @@ class ProfilePage extends PageObject {
         return await this.getProfileName().getText()
     }
 
-    private getProfileName(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@class="vcard-names "]/span')
-    }
-
     public async getProfileBioText(): Promise<string> {
         await this.getProfileBio().waitForDisplayed({
             timeoutMsg: 'Bio was not displayed'
@@ -26,19 +22,11 @@ class ProfilePage extends PageObject {
         return await this.getProfileBio().getText()
     }
 
-    private getProfileBio(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@class="p-note"]')
-    }
-
     public async getProfileEmailText(): Promise<string> {
         await this.getProfileEmail().waitForExist({
             timeoutMsg: 'Email was not displayed'
         })
         return await this.getProfileEmail().getText()
-    }
-
-    private getProfileEmail(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@itemprop="email"]/a')
     }
 
     public async getPonounsText(): Promise<string> {
@@ -50,6 +38,18 @@ class ProfilePage extends PageObject {
 
     private getPronouns(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$('//*[contains(@class, "p-nickname")]/span')
+    }
+
+    private getProfileName(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@class="vcard-names "]/span')
+    }
+
+    private getProfileBio(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@class="p-note"]')
+    }
+
+    private getProfileEmail(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@itemprop="email"]/a')
     }
 }
 

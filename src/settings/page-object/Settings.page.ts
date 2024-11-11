@@ -1,18 +1,10 @@
 import { ChainablePromiseElement } from 'webdriverio'
-import { PageObject } from './PageObjects'
+import { PageObject } from '../../page-objects/PageObjects'
+import { Promouns, Email, EMPTY_STRING } from "../../common/type"
+import { ProfilePage } from "../../profile/page-object/Profile.page"
 
 class SettingsPage extends PageObject {
     protected url: string = 'https://github.com/settings/profile'
-    // нужно вынести в enum  в другой файл
-    static selectEmail = {
-        defaultValue: 0,
-        selectEmail: 1
-    } as const;
-
-    static Promouns = {
-        defaultValue: 0,
-        theyThem: 1
-    } as const;
 
     constructor(browser: WebdriverIO.Browser) {
         super(browser)
@@ -33,6 +25,9 @@ class SettingsPage extends PageObject {
     }
 
     public async getBioValue(): Promise<string> { //добавить проверку, что элемент доступен 
+        await this.getBioForm().waitForDisplayed({
+            timeoutMsg: 'Bio field was not displayed'
+        })
         let bioValue: string = await this.getBioForm().getValue()
         return bioValue
     }
@@ -46,6 +41,9 @@ class SettingsPage extends PageObject {
     }
 
     public async getSelectPublicEmailValue(): Promise<string> {
+        await this.getPublicEmailSelect().waitForDisplayed({
+            timeoutMsg: 'Select Email field was not displayed'
+        })
         let selectPublicEmail: string = await this.getPublicEmailSelect().getValue()
         return selectPublicEmail
     }
@@ -66,6 +64,9 @@ class SettingsPage extends PageObject {
 
 
     public async getPronounsSelectValue(): Promise<string> {
+        await this.getPronounsSelect().waitForDisplayed({
+            timeoutMsg: 'Select Pronouns field was not displayed'
+        })
         let selectPronouns: string = await this.getPronounsSelect().getValue()
         return selectPronouns
     }
@@ -78,7 +79,7 @@ class SettingsPage extends PageObject {
     }
 
     public async saveUpdateProfile(): Promise<void> {
-        await this.getSubmitUpdateProfile().waitForDisplayed({ // проверку на кликабельность
+        await this.getSubmitUpdateProfile().waitForClickable({ // проверку на кликабельность
             timeoutMsg: 'Submit field was not displayed'
         })
         await this.getSubmitUpdateProfile().click()
@@ -117,10 +118,6 @@ class SettingsPage extends PageObject {
         return await this.getAlertSuccesUpload().getText()
     }
 
-    // public async getTextAlertFailedUpload(): Promise<string> {
-    //     return await this.getAlertFailedUpload().getText()
-    // }
-
     public async isDisplayedAlertFailedUpload(): Promise<void> {
         await this.getAlertFailedUpload().waitForDisplayed({
             timeoutMsg: 'Alert Failed Upload was not displayed',
@@ -149,12 +146,47 @@ class SettingsPage extends PageObject {
     }
 
     public async removePhoto(): Promise<void> {
+        console.log('check 1')
         await this.getContextMenu()
-        await await this.getRemoveButton().waitForClickable({ //клабельность
-            timeoutMsg: 'Remove button was not clickable' // исправить сообщение 
-        })
-        await this.getRemoveButton().click()
-        await this.browser.acceptAlert()
+        if (await this.getUploadPhoto().isExisting()) {
+            await (await this.browser.$('body')).click();
+            return
+        } else {
+            console.log('check')
+            await this.getRemoveButton().waitForClickable({ //клабельность
+                timeoutMsg: 'Remove button was not clickable' // исправить сообщение 
+            })
+            await this.getRemoveButton().click()
+            await this.browser.acceptAlert()
+        }
+    }
+
+    public async resetSettignsPage(): Promise<void> {
+        await this.open()
+        await this.setProfileName(EMPTY_STRING) // использовать пустую строку , положить в const
+        await this.setBioForm(EMPTY_STRING)
+        await this.setPublicEmailSelect(Email.defaultValue)
+        await this.setPronounsSelect(Promouns.defaultValue)
+        console.log('before remove')
+        await this.removePhoto()
+        console.log('check3')
+        await this.saveUpdateProfile() // переименовать метод 
+        await this.waitForDisplayedAlertSuccessfully()
+    }
+
+    public async setAndSaveProfileName(name: string): Promise<void> {
+        await this.setProfileName(name)
+        await this.saveUpdateProfile()
+    }
+
+    public async setAndSaveEmail(index: number): Promise<void> {
+        await this.setPublicEmailSelect(index) // вынести в enum
+        await this.saveUpdateProfile()
+    }
+
+    public async setAdnSavePromouns(index: number): Promise<void> {
+        await this.setPronounsSelect(index) // сюда передавать enum
+        await this.saveUpdateProfile()
     }
 
     private getInputFile(): ChainablePromiseElement<WebdriverIO.Element> {
@@ -211,6 +243,10 @@ class SettingsPage extends PageObject {
 
     private getRemoveButton(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$('//*[contains(@class, "dropdown-menu")]/form/button')
+    }
+
+    private getUploadPhoto(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@for='avatar_upload']")
     }
 }
 

@@ -1,6 +1,7 @@
 import { ChainablePromiseElement } from 'webdriverio'
-import { PageObject } from '../../src/page-objects/PageObjects'
+import { PageObject } from '../../page-objects/PageObjects'
 import { IssueData } from '../data/issues.data'
+import { IssueModel } from '../model/issues.model'
 
 class IssuesPage extends PageObject {
     protected url: string = 'https://github.com/TestUserIps2/test123/issues'
@@ -20,7 +21,7 @@ class IssuesPage extends PageObject {
     }
 
     public async clickButtonNewIssue(): Promise<void> {
-        await this.getButtonNewIssue().waitForDisplayed({
+        await this.getButtonNewIssue().waitForClickable({
             timeoutMsg: 'Button New Issue was not displayed'
         })
         await this.getButtonNewIssue().click()
@@ -36,16 +37,11 @@ class IssuesPage extends PageObject {
         })
     }
 
-    public async setTitle(titleValue: string): Promise<void> { // вопрос
+    public async setTitle(issue: IssueModel): Promise<void> { // вопрос
         await this.getTitleForm().waitForDisplayed({
             timeoutMsg: 'Title form was not displayed'
         })
-        await this.getTitleForm().setValue(titleValue)
-    }
-
-    public async getTitleValue(): Promise<string> {
-        let titleValue: string = await this.getTitleForm().getValue()
-        return titleValue
+        await this.getTitleForm().setValue(issue.title)
     }
 
     private getDescriptionForm(): ChainablePromiseElement<WebdriverIO.Element> {
@@ -58,63 +54,49 @@ class IssuesPage extends PageObject {
         })
     }
 
-    public async setDescription(descriptionValue: string): Promise<void> { // Вопрос
+    public async setDescription(description: string): Promise<void> { // Вопрос: здесь нужно использовать модель или можно вот так
         await this.getDescriptionForm().waitForDisplayed({
             timeoutMsg: 'Description form was not displayed'
         })
-        await this.getDescriptionForm().setValue(descriptionValue) // добавил ! чтобы не ругалась ide
-    }
-
-    public async getDescriptionValue(): Promise<string> {
-        let descriptionValue: string = await this.getDescriptionForm().getValue()
-        return descriptionValue
+        await this.getDescriptionForm().setValue(description)
     }
 
     private getButtonSubmitNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//button[contains(text(), "Submit new issue")]')
+        return this.browser.$("//div[@class='Layout-main']//button[@type='submit']")
     }
 
-    public async waitForDisplayedgetSubmitNewIssueButton(): Promise<void> {
+    public async waitForDisplayedSubmitNewIssueButton(): Promise<void> {
         await this.getButtonSubmitNewIssue().waitForDisplayed({
             timeoutMsg: 'Submit New Issue Button was not displayed',
         })
     }
 
     public async clickButtonSubmitNewIssue(): Promise<void> {
-        await this.getButtonSubmitNewIssue().waitForDisplayed({
+        await this.getButtonSubmitNewIssue().waitForClickable({
             timeoutMsg: 'Submit New Issue Button was not displayed'
         })
         await this.getButtonSubmitNewIssue().click()
     }
 
-    private getTitleIssue(titleName: string): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$(`//bdi[contains(text(), "${titleName}")]`)
+    private getTitileIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//div[@class='gh-header-show ']//bdi")
     }
 
-    public async waitForDisplayedgetTitleIssue(titleName: string): Promise<void> {
-        await this.getTitleIssue(titleName).waitForDisplayed({
-            timeoutMsg: 'Title issue was not displayed',
+    public async waitForDisplayedTitleIssue(): Promise<void> {
+        await this.getTitileIssue().waitForDisplayed({
+            timeoutMsg: 'Title Issue was not displayed',
         })
     }
 
-    public async getTitleIssueValue(titleName: string): Promise<string> {
-        let titleIssueValue: string = await this.getTitleIssue(titleName).getText()
-        return titleIssueValue
-    }
-
-    private getDescriptionIssue(descriptionValue: string): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$(`//p[contains(text(), "${descriptionValue}")]`)
-    }
-
-    public async waitForDisplayedgetDescriptionIssue(descriptionValue: string): Promise<void> {
-        await this.getDescriptionIssue(descriptionValue).waitForDisplayed({
-            timeoutMsg: 'Description value  was not displayed',
+    public async getTitleIssueText(): Promise<string> {
+        await this.getTitileIssue().waitForDisplayed({
+            timeoutMsg: 'Title Issue was not displayed',
         })
+        return this.getTitileIssue().getText()
     }
 
-    public async getDescriptionIssueValue(descriptionIssue: string): Promise<string> {
-        let descriptionValue: string = await this.getDescriptionIssue(descriptionIssue).getText()
-        return descriptionValue
+    private getEditTitle(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$$("//div[@class='gh-header-show ']//span[@class='Button-content']/span[@class='Button-label']").
     }
 
 }

@@ -1,5 +1,5 @@
 import { ChainablePromiseElement } from 'webdriverio'
-import { PageObject } from './PageObjects'
+import { PageObject } from '../../page-objects/PageObjects'
 
 class LoginPage extends PageObject {
     protected url: string = 'https://github.com/login'
