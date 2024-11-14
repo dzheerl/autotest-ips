@@ -4,7 +4,7 @@ import { IssueData } from '../data/issues.data'
 import { IssueModel } from '../model/issues.model'
 
 class IssuesPage extends PageObject {
-    protected url: string = 'https://github.com/TestUserIps2/test123/issues'
+    protected url: string = 'https://github.com/TestUserIps2/qwert123/issues'
 
     constructor(browser: WebdriverIO.Browser) {
         super(browser)
@@ -157,6 +157,13 @@ class IssuesPage extends PageObject {
         return this.browser.$("//*[@data-disable-with='Updating']")
     }
 
+    public async getTextTimeLineItemLast(): Promise<string> {
+        await this.getTimeLineItemLastElement().waitForDisplayed({
+            timeoutMsg: 'Time Line Item Last Element was not Displayed',
+        })
+        return this.getTimeLineItemLastElement().getText()
+    }
+
     private getTimeLineItemLastElement(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$("(//*[@class='TimelineItem-body'])[last()]")
     }
@@ -255,7 +262,109 @@ class IssuesPage extends PageObject {
         return this.browser.$("(//*[@type='file'])[1]")
     }
 
+    public async getTextLockConversation(): Promise<string> {
+        await this.getButtonLockConversation().waitForDisplayed({
+            timeoutMsg: 'Description Issue was not displayed',
+        })
+        return this.getButtonLockConversation().getText()
+    }
 
+    public async getTextUnlockConversation(): Promise<string> {
+        await this.getButtonLockConversation().waitForDisplayed({
+            timeoutMsg: 'Description Issue was not displayed',
+        })
+        return this.getButtonLockConversation().getText()
+    }
+
+    public async lockConversation(): Promise<void> {
+        await this.getButtonLockConversation().waitForClickable({
+            timeoutMsg: 'lock Conversation was not Clickable',
+        })
+        await this.getButtonLockConversation().click()
+    }
+
+    private getButtonLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@role='button']")
+    }
+
+    public async acceptLockConversation(): Promise<void> {
+        await this.getButtonAcceptLockConversation().waitForClickable({
+            timeoutMsg: 'Accept lock Conversation was not Clickable',
+        })
+        await this.getButtonAcceptLockConversation().click()
+    }
+
+    private getButtonAcceptLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@class='Box-footer']/button")
+    }
+
+    public async closeIssue(): Promise<void> {
+        await this.getButtonCloseIssue().waitForDisplayed({
+            timeoutMsg: 'Button Close Issue was not Displayed',
+        })
+        await this.getButtonCloseIssue().waitForClickable({
+            timeoutMsg: 'Button Close Issue was not Clickable',
+        })
+        await this.getButtonCloseIssue().click()
+    }
+
+    private getButtonCloseIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@name='comment_and_close']")
+    }
+
+    public async deleteIssue(): Promise<void> {
+        await this.getButtonDeleteIssue().waitForDisplayed({
+            timeoutMsg: 'Button delete Issue was not Displayed',
+        })
+        await this.getButtonDeleteIssue().waitForClickable({
+            timeoutMsg: 'Button delete Issue was not Clickable',
+        })
+        await this.getButtonDeleteIssue().click()
+    }
+
+    public async acceptDeleteIssue(): Promise<void> {
+        await this.getAcceptDeleteIssue().waitForDisplayed({
+            timeoutMsg: 'Accept delete Issue was not Displayed',
+        })
+        await this.getAcceptDeleteIssue().waitForClickable({
+            timeoutMsg: 'Accept delete Issue was not Clickable',
+        })
+        await this.getAcceptDeleteIssue().click()
+    }
+
+    private getAcceptDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='edit_issue']//button")
+    }
+
+    private getButtonDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[contains(@class, 'details-reset')])[last()]//summary")
+    }
+
+    public async setTextComment(issue: IssueModel): Promise<void> {
+        await this.getTextAreaComment().waitForDisplayed({
+            timeoutMsg: 'Comment form was not displayed'
+        })
+        await this.getTextAreaComment().setValue(issue.comment)
+    }
+
+    private getTextAreaComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@name="comment[body]"]')
+    }
+
+    public async addComment(): Promise<void> {
+        await this.getButtonAddComment().waitForDisplayed({
+            timeoutMsg: 'Button add comment was not Displayed',
+        })
+        await this.getButtonAddComment().waitForClickable({
+            timeoutMsg: 'Button add comment was not Clickable',
+        })
+        await this.getButtonAddComment().click()
+        await this.browser.refresh()
+    }
+
+    private getButtonAddComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='mt-2']//*[@type='submit'])[last()]")
+    }
 }
 
 async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> {
