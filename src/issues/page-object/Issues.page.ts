@@ -4,14 +4,10 @@ import { IssueData } from '../data/issues.data'
 import { IssueModel } from '../model/issues.model'
 
 class IssuesPage extends PageObject {
-    protected url: string = 'https://github.com/TestUserIps2/qwert123/issues'
+    protected url: string = 'https://github.com/TestUserIps3/qwert123/issues'
 
     constructor(browser: WebdriverIO.Browser) {
         super(browser)
-    }
-
-    private getButtonNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@data-hotkey="c"]')
     }
 
     public async waitForDisplayedButtonNewIssue(): Promise<void> {
@@ -21,14 +17,11 @@ class IssuesPage extends PageObject {
     }
 
     public async clickButtonNewIssue(): Promise<void> {
-        await this.getButtonNewIssue().waitForClickable({
+
+        await this.getButtonNewIssue().waitForDisplayed({
             timeoutMsg: 'Button New Issue was not displayed'
         })
         await this.getButtonNewIssue().click()
-    }
-
-    private getTitleForm(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@id="issue_title"]')
     }
 
     public async waitForDisplayedgetTitleForm(): Promise<void> {
@@ -44,10 +37,6 @@ class IssuesPage extends PageObject {
         await this.getTitleForm().setValue(issue.title)
     }
 
-    private getDescriptionForm(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@id="issue_body"]')
-    }
-
     public async waitForDisplayedgetDescriptionForm(): Promise<void> {
         await this.getDescriptionForm().waitForDisplayed({
             timeoutMsg: 'Description form was not displayed',
@@ -58,11 +47,7 @@ class IssuesPage extends PageObject {
         await this.getDescriptionForm().waitForDisplayed({
             timeoutMsg: 'Description form was not displayed'
         })
-        await this.getDescriptionForm().setValue(issue.description)
-    }
-
-    private getButtonSubmitNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//div[@class='Layout-main']//button[@type='submit']")
+        await this.getDescriptionForm().setValue(issue.description!)
     }
 
     public async waitForDisplayedSubmitNewIssueButton(): Promise<void> {
@@ -76,10 +61,6 @@ class IssuesPage extends PageObject {
             timeoutMsg: 'Submit New Issue Button was not displayed'
         })
         await this.getButtonSubmitNewIssue().click()
-    }
-
-    private getTitileIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//div[@class='gh-header-show ']//bdi")
     }
 
     public async waitForDisplayedTitleIssue(): Promise<void> {
@@ -102,19 +83,12 @@ class IssuesPage extends PageObject {
         return this.getFirstDescriptionIssuse().getText()
     }
 
-    private getFirstDescriptionIssuse(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='edit-comment-hide'])[1]")
-    }
-
     public async getLastCommentText(): Promise<string> {
+        await this.browser.pause(1000)
         await this.getLastComment().waitForDisplayed({
             timeoutMsg: 'Description Issue was not displayed',
         })
         return this.getLastComment().getText()
-    }
-
-    private getLastComment(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='edit-comment-hide'])[last()]");
     }
 
     public async clickEditTitle(): Promise<void> {
@@ -124,19 +98,11 @@ class IssuesPage extends PageObject {
         await this.getEditTitle().click()
     }
 
-    private getEditTitle(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//div[@class='gh-header-show ']//span[@class='Button-content']/span[@class='Button-label']")
-    }
-
     public async getTitleIssueValue(): Promise<string> {
         await this.getTitleIssueForm().waitForDisplayed({
             timeoutMsg: 'Title Issue was not Displayed',
         })
         return this.getTitleIssueForm().getText()
-    }
-
-    private getTitleIssueForm(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@id='issue_title']")
     }
 
     public async setTitleIssue(issue: IssueModel): Promise<void> {
@@ -153,19 +119,11 @@ class IssuesPage extends PageObject {
         await this.getButtonUpdateTitle().click()
     }
 
-    private getButtonUpdateTitle(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@data-disable-with='Updating']")
-    }
-
     public async getTextTimeLineItemLast(): Promise<string> {
         await this.getTimeLineItemLastElement().waitForDisplayed({
             timeoutMsg: 'Time Line Item Last Element was not Displayed',
         })
         return this.getTimeLineItemLastElement().getText()
-    }
-
-    private getTimeLineItemLastElement(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='TimelineItem-body'])[last()]")
     }
 
     public async clickKebabMenuDescription(): Promise<void> {
@@ -186,19 +144,11 @@ class IssuesPage extends PageObject {
         await this.getButtonEditDescription().click()
     }
 
-    private getButtonEditDescription(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("((//*[contains(@class, 'timeline-comment-header')])[1]//*[contains(@aria-label, 'Edit comment')])")
-    }
-
-    private getKebabDescription(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[contains(@class, 'timeline-comment-header')])[1]//summary[contains(@class, 'timeline-comment-action')]")
-    }
-
     public async setUpdatedDescription(issue: IssueModel): Promise<void> {
         await this.getTextAreaDescription().waitForDisplayed({
             timeoutMsg: 'Text Area Description Issue was not Displayed',
         })
-        await this.getTextAreaDescription().setValue(issue.description)
+        await this.getTextAreaDescription().setValue(issue.description) //либо
     }
 
     public async getDescriptionText(): Promise<string> {
@@ -215,29 +165,6 @@ class IssuesPage extends PageObject {
         return await this.getAttachImg().getAttribute("alt")
     }
 
-    private getAttachImg(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='edit-comment-hide'])[1]//p[@dir='auto']//img")
-    }
-
-    public async fileAtachErrorExist(): Promise<boolean> {
-        await this.getFileAttachError().waitForExist({
-            timeoutMsg: 'Description Issue was not Displayed',
-        })
-        return await this.getFileAttachError().isExisting()
-    }
-
-    private getFileAttachError(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='file-attachment-errors'])[1]")
-    }
-
-    private getDescription(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@class='edit-comment-hide'])[1]//p[@dir='auto']")
-    }
-
-    private getTextAreaDescription(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@name='issue[body]'])[1]")
-    }
-
     public async saveUpdatedDescription(): Promise<void> {
         await this.getButtonUpdatedDescription().waitForClickable({
             timeoutMsg: 'save updated secription was not Clickable',
@@ -245,8 +172,11 @@ class IssuesPage extends PageObject {
         await this.getButtonUpdatedDescription().click()
     }
 
-    private getButtonUpdatedDescription(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//form//div/div/*[@type='submit']")
+    public async fileAtachErrorExist(): Promise<boolean> { //добавить is (нэйминг), 1- глагол
+        await this.getFileAttachError().waitForDisplayed({ //wait for displayed
+            timeoutMsg: 'Description Issue was not Displayed',
+        })
+        return await this.getFileAttachError().isExisting()
     }
 
     public async uploadFile(filePath: string): Promise<void> {
@@ -256,10 +186,7 @@ class IssuesPage extends PageObject {
         await showHiddenFileInput(this.browser)
         const file: string = await this.browser.uploadFile(filePath)
         await this.getInputFile().setValue(file)
-    }
-
-    private getInputFile(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[@type='file'])[1]")
+        await this.browser.pause(3000)
     }
 
     public async getTextLockConversation(): Promise<string> {
@@ -283,19 +210,11 @@ class IssuesPage extends PageObject {
         await this.getButtonLockConversation().click()
     }
 
-    private getButtonLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@role='button']")
-    }
-
     public async acceptLockConversation(): Promise<void> {
         await this.getButtonAcceptLockConversation().waitForClickable({
             timeoutMsg: 'Accept lock Conversation was not Clickable',
         })
         await this.getButtonAcceptLockConversation().click()
-    }
-
-    private getButtonAcceptLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@class='Box-footer']/button")
     }
 
     public async closeIssue(): Promise<void> {
@@ -308,11 +227,7 @@ class IssuesPage extends PageObject {
         await this.getButtonCloseIssue().click()
     }
 
-    private getButtonCloseIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@name='comment_and_close']")
-    }
-
-    public async deleteIssue(): Promise<void> {
+    public async clickDeleteIssue(): Promise<void> {
         await this.getButtonDeleteIssue().waitForDisplayed({
             timeoutMsg: 'Button delete Issue was not Displayed',
         })
@@ -323,6 +238,7 @@ class IssuesPage extends PageObject {
     }
 
     public async acceptDeleteIssue(): Promise<void> {
+        // await this.browser.pause(500)
         await this.getAcceptDeleteIssue().waitForDisplayed({
             timeoutMsg: 'Accept delete Issue was not Displayed',
         })
@@ -332,23 +248,11 @@ class IssuesPage extends PageObject {
         await this.getAcceptDeleteIssue().click()
     }
 
-    private getAcceptDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("//*[@class='edit_issue']//button")
-    }
-
-    private getButtonDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$("(//*[contains(@class, 'details-reset')])[last()]//summary")
-    }
-
     public async setTextComment(issue: IssueModel): Promise<void> {
         await this.getTextAreaComment().waitForDisplayed({
             timeoutMsg: 'Comment form was not displayed'
         })
-        await this.getTextAreaComment().setValue(issue.comment)
-    }
-
-    private getTextAreaComment(): ChainablePromiseElement<WebdriverIO.Element> {
-        return this.browser.$('//*[@name="comment[body]"]')
+        await this.getTextAreaComment().setValue(issue.comment!)
     }
 
     public async addComment(): Promise<void> {
@@ -359,11 +263,148 @@ class IssuesPage extends PageObject {
             timeoutMsg: 'Button add comment was not Clickable',
         })
         await this.getButtonAddComment().click()
-        await this.browser.refresh()
+    }
+
+    public async setSearch(issue: IssueModel): Promise<void> {
+        await this.getIssueSearch().waitForDisplayed({
+            timeoutMsg: 'Title Issue was not Displayed',
+        })
+        await this.getIssueSearch().setValue(issue.title)
+        await browser.keys('Enter');
+    }
+
+    public async isIssueExsist(issue: IssueModel): Promise<boolean> {
+        await this.getTitleOpenIssue(issue.title).waitForDisplayed({
+            timeoutMsg: 'Issue was not Displayed',
+        })
+        return this.getTitleOpenIssue(issue.title).isExisting()
+    }
+
+    public async createIssue(issue: IssueModel): Promise<void> {
+        await this.open()
+        await this.clickButtonNewIssue()
+        await this.setTitleNewIssue(issue)
+        await this.setDescriptionNewIssueForm(issue)
+        await this.clickButtonSubmitNewIssue()
+    }
+
+    public async deleteIssue(issue: IssueModel): Promise<void> {
+        await this.browser.url(issue.url!)
+        await this.clickDeleteIssue()
+        // await this.browser.pause(3000)
+        await this.acceptDeleteIssue()
+    }
+
+    private getButtonNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='application-main ']//*[contains(@class, 'ml-3')]")
+    }
+
+    private getTitleForm(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@id="issue_title"]')
+    }
+
+    private getDescriptionForm(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@id="issue_body"]')
+    }
+
+    private getButtonSubmitNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//div[@class='Layout-main']//button[@type='submit']")
+    }
+
+    private getTitileIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//div[@class='gh-header-show ']//bdi")
+    }
+
+    private getFirstDescriptionIssuse(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='edit-comment-hide'])[1]")
+    }
+
+    private getLastComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='edit-comment-hide'])[last()]");
+    }
+
+    private getEditTitle(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//div[@class='gh-header-show ']//span[@class='Button-content']/span[@class='Button-label']")
+    }
+
+    private getTitleIssueForm(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@id='issue_title']")
+    }
+
+    private getButtonUpdateTitle(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@data-disable-with='Updating']")
+    }
+
+    private getTimeLineItemLastElement(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='TimelineItem-body'])[last()]")
+    }
+
+    private getButtonEditDescription(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("((//*[contains(@class, 'timeline-comment-header')])[1]//*[contains(@aria-label, 'Edit comment')])")
+    }
+
+    private getKebabDescription(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[contains(@class, 'timeline-comment-header')])[1]//summary[contains(@class, 'timeline-comment-action')]")
+    }
+
+    private getAttachImg(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='edit-comment-hide'])[1]//p[@dir='auto']//img")
+    }
+
+    private getFileAttachError(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='file-attachment-errors'])[1]")
+    }
+
+    private getDescription(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@class='edit-comment-hide'])[1]//p[@dir='auto']")
+    }
+
+    private getTextAreaDescription(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@name='issue[body]'])[1]")
+    }
+
+    private getButtonUpdatedDescription(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//form//div/div/*[@type='submit']")
+    }
+
+    private getInputFile(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@type='file'])[1]")
+    }
+
+    private getButtonLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@role='button']")
+    }
+
+    private getButtonAcceptLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='discussion-sidebar-item']//*[@class='Box-footer']/button")
+    }
+
+    private getButtonCloseIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@name='comment_and_close']")
+    }
+
+    private getAcceptDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@class='edit_issue']//button")
+    }
+
+    private getButtonDeleteIssue(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[contains(@class, 'details-reset')])[last()]//summary")
+    }
+
+    private getTextAreaComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$('//*[@name="comment[body]"]')
     }
 
     private getButtonAddComment(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$("(//*[@class='mt-2']//*[@type='submit'])[last()]")
+    }
+
+    private getIssueSearch(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[contains(@class, 'subnav-search')]//*[@type='text']")
+    }
+
+    private getTitleOpenIssue(issueTitle: string): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$(`//*[text()="${issueTitle}"]`)
     }
 }
 

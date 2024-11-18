@@ -136,7 +136,7 @@ class SettingsPage extends PageObject {
 
     public async getContextMenu(): Promise<void> {
         await await this.getContextMenuElement().waitForClickable({ // нужно ли проверять кликабельнось если это див с курсор=поинтер?
-            timeoutMsg: 'Conteext menu was not clickable' // исправить сообщение 
+            timeoutMsg: 'Context menu was not clickable' // исправить сообщение 
         })
         await this.getContextMenuElement().click()
     }
@@ -146,13 +146,11 @@ class SettingsPage extends PageObject {
     }
 
     public async removePhoto(): Promise<void> {
-        console.log('check 1')
         await this.getContextMenu()
         if (await this.getUploadPhoto().isExisting()) {
             await (await this.browser.$('body')).click();
             return
         } else {
-            console.log('check')
             await this.getRemoveButton().waitForClickable({ //клабельность
                 timeoutMsg: 'Remove button was not clickable' // исправить сообщение 
             })
@@ -163,14 +161,15 @@ class SettingsPage extends PageObject {
 
     public async resetSettignsPage(): Promise<void> {
         await this.open()
-        await this.setProfileName(EMPTY_STRING) // использовать пустую строку , положить в const
+
+        await this.setProfileName(EMPTY_STRING)
         await this.setBioForm(EMPTY_STRING)
         await this.setPublicEmailSelect(Email.defaultValue)
         await this.setPronounsSelect(Promouns.defaultValue)
-        console.log('before remove')
+
         await this.removePhoto()
-        console.log('check3')
-        await this.saveUpdateProfile() // переименовать метод 
+
+        await this.saveUpdateProfile()
         await this.waitForDisplayedAlertSuccessfully()
     }
 

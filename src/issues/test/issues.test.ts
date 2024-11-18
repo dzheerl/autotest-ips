@@ -1,132 +1,140 @@
 import { LoginPage } from "../../login/page-object/Login.page"
 import { auth } from "../../secrets/passwords"
-import { IssueData } from "../data/issues.data"
 import { IssuesPage } from "../page-object/Issues.page"
 import { IssueModel, createIssuesModel } from "../model/issues.model"
-import { PageObject } from "../../page-objects/PageObjects"
 import { getRandom } from "../../common/tools"
 import { CloseIssuesPage } from "../page-object/closeIssues.pages"
-import { OpenIssuesPage } from "../page-object/openIssues.pages"
+import { FILE_NAME, INVALID_FILE_PATH, VALID_FILE_PATH } from "../../common/type" //константу положиь в дату
 
 
-describe('Issues Page', () => {
+describe('Работа с задачей', () => {
     let loginPage: LoginPage
     let issuePage: IssuesPage
     let closeIssuePage: CloseIssuesPage
-    let openIssuesPage: OpenIssuesPage
 
     let issue: IssueModel
 
-    before(async () => {
+    before('Before #1: Логинация', async () => { //логически разграничить before - можно создать много before
         loginPage = new LoginPage(browser)
-        issuePage = new IssuesPage(browser)
-        closeIssuePage = new CloseIssuesPage(browser)
-        openIssuesPage = new OpenIssuesPage(browser)
         await loginPage.open()
         await loginPage.login(auth)
-        await issuePage.open()
-        issue = createIssuesModel()
     })
 
-    beforeEach(async () => {
+    describe('Работа с задачей', () => {
+        beforeEach(async () => {
+            issuePage = new IssuesPage(browser)
+            issue = createIssuesModel()
+        })
 
+        describe('Создание задачи и работа с задачей', () => {
+            describe('Создание задачи', () => {
+                it('#1 Создание задачи', async () => {
+                    await issuePage.open()
+                    await issuePage.clickButtonNewIssue()
+                    await issuePage.setTitleNewIssue(issue)
+                    await issuePage.clickButtonSubmitNewIssue()
+                    issue.url = await browser.getUrl()
+                    await issuePage.open()
+                    expect(await issuePage.isIssueExsist(issue)).toEqual(true)
+                })
+            })
+
+            describe('Работа с задачей', () => {
+                beforeEach(async () => {
+                    closeIssuePage = new CloseIssuesPage(browser)
+                    await issuePage.createIssue(issue)
+                    issue.url = await browser.getUrl()
+                })
+
+                it('#2 Проверка, что созданная задача есть в списке задач', async () => {
+
+                    await issuePage.open()
+                    expect(await issuePage.isIssueExsist(issue)).toEqual(true)
+                })
+
+                it('#3 Поиск задачи в списке через поиск', async () => {
+                    await issuePage.open()
+                    await issuePage.setSearch(issue)
+                    expect(await issuePage.isIssueExsist(issue)).toEqual(true)
+                })
+
+                it('#4 Редактирование Title задачи', async () => {
+                    let oldTitle: string = await issuePage.getTitleIssueText()
+                    issue.title = getRandom(256)
+
+                    await issuePage.clickEditTitle()
+                    await issuePage.setTitleIssue(issue)
+                    await issuePage.updateTitle()
+
+                    expect(await issuePage.getTitleIssueText()).not.toEqual(oldTitle)
+                })
+
+                it('#5 Редактирование Description задачи', async () => {
+                    let oldtDescription: string = await issuePage.getDescriptionText()
+                    issue.description = getRandom(256)
+                    await issuePage.clickKebabMenuDescription()
+                    await issuePage.clickEditDescription()
+                    await issuePage.setUpdatedDescription(issue)
+                    await issuePage.saveUpdatedDescription()
+                    expect(await issuePage.getFirstDescriptionText()).not.toEqual(oldtDescription)
+                })
+
+
+                it('#6 Добавление файла PNG в существующий комментарий', async () => {
+                    await issuePage.clickKebabMenuDescription()
+                    await issuePage.clickEditDescription()
+                    await issuePage.uploadFile(VALID_FILE_PATH) //засунуть в data
+                    await issuePage.saveUpdatedDescription()
+                    expect(await issuePage.getAltImg()).toEqual(FILE_NAME)//засунуть в data
+                })
+
+                it('#7 Добавление файла невалидного формата *.robin-source в существующий комментарий', async () => {
+                    await issuePage.clickKebabMenuDescription()
+                    await issuePage.clickEditDescription()
+                    await issuePage.uploadFile(INVALID_FILE_PATH)
+                    expect(await issuePage.fileAtachErrorExist()).toEqual(true) //изменить на displayed
+                })
+
+                it('#8 Добавление комментария в задачу', async () => {
+                    console.log('чекаем комментарий')
+                    await issuePage.setTextComment(issue)
+                    await issuePage.addComment()
+                    expect(await issuePage.getLastCommentText()).toEqual(issue.comment)
+                })
+
+                it('#9 Заблокировать обсуждение задачи', async () => {
+                    let lockText: string = await issuePage.getTextLockConversation()
+                    await issuePage.lockConversation()
+                    await issuePage.acceptLockConversation()
+                    expect(await issuePage.getTextLockConversation()).not.toEqual(lockText)
+                })
+
+                it('#10 Закрытие задачи', async () => {
+                    await issuePage.closeIssue()
+                    await closeIssuePage.open()
+                    expect(await closeIssuePage.isIssueExsist(issue)).toEqual(true)
+                })
+            })
+
+            afterEach(async () => {
+                await issuePage.deleteIssue(issue)
+            })
+        })
     })
 
-    it('#1 Создание задачи c Title и Description', async () => {
-        await issuePage.clickButtonNewIssue() // create new issue (создать, указать title и desc)
-        let issueTitle: string = issue.title
-        await issuePage.setTitleNewIssue(issue)
-        await issuePage.setDescriptionNewIssueForm(issue)
-        await issuePage.clickButtonSubmitNewIssue()
-        issue.url = await browser.getUrl()
-        // expect(await issuePage.getTitleIssueText()).toEqual(issue.title)
-        // expect(await issuePage.getFirstDescriptionText()).toEqual(issue.description)
-        expect([await issuePage.getTitleIssueText(), await issuePage.getFirstDescriptionText()]).toEqual([issue.title, issue.description])
+
+
+    describe('Удаление задачи', () => {
+        before(async () => {
+            await issuePage.createIssue(issue)
+            issue.url = await browser.getUrl()
+        })
+
+        it('#11 Удаление задачи', async () => {
+            await issuePage.clickDeleteIssue()
+            await issuePage.acceptDeleteIssue()
+            await closeIssuePage.open()
+            expect(await closeIssuePage.isIssueExsist(issue)).toEqual(false)
+        })
     })
-
-    it('#2 Поиск задачи в списке через поиск', async () => {
-        await openIssuesPage.open()
-        await openIssuesPage.setSearch(issue)
-        expect(await openIssuesPage.issueIsExsist(issue)).toEqual(true)
-    })
-
-    it('#3 Редактирование Title задачи', async () => {
-        await browser.url(issue.url)
-        let oldTitle: string = await issuePage.getTitleIssueText()
-        issue.title = getRandom(256)
-        await issuePage.clickEditTitle()
-        await issuePage.setTitleIssue(issue)
-        await issuePage.updateTitle()
-        expect(await issuePage.getTitleIssueText()).not.toEqual(oldTitle)
-    })
-
-    it('#4 Редактирование Description задачи', async () => {
-        await browser.url(issue.url)
-        let oldtDescription: string = await issuePage.getDescriptionText()
-        issue.description = getRandom(256)
-        await issuePage.clickKebabMenuDescription()
-        await issuePage.clickEditDescription()
-        await issuePage.setUpdatedDescription(issue)
-        await issuePage.saveUpdatedDescription()
-        expect(await issuePage.getFirstDescriptionText()).not.toEqual(oldtDescription)
-    })
-
-
-    it('#5 Добавление файла PNG в существующий комментарий', async () => {
-        await browser.url(issue.url)
-        await browser.refresh()
-        await issuePage.clickKebabMenuDescription()
-        await issuePage.clickEditDescription()
-        await issuePage.uploadFile('./src/common/files/img/Коллекция.png') //Загнать в константу
-        await browser.pause(3000)
-        await issuePage.saveUpdatedDescription()
-        expect(await issuePage.getAltImg()).toEqual("Коллекция") // загнать в константу
-    })
-
-    it('#6 Добавление файла невалидного формата в существующий комментарий', async () => {
-        await browser.url(issue.url)
-        await browser.refresh()
-        await issuePage.clickKebabMenuDescription()
-        await issuePage.clickEditDescription()
-        await issuePage.uploadFile('./src/common/files/img/PDF.robin-source') //Загнать в константу
-        expect(await issuePage.fileAtachErrorExist()).toEqual(true) // загнать в константу
-    })
-
-    it('#7 Добавление комментария в задачу', async () => {
-        await browser.url(issue.url)
-        await issuePage.setTextComment(issue)
-        await issuePage.addComment()
-        expect(await issuePage.getLastCommentText()).toEqual(issue.comment)
-    })
-
-    it('#8 Заблокировать обсуждение задачи', async () => {
-        await browser.url(issue.url)
-        let lockText: string = await issuePage.getTextLockConversation()
-        await issuePage.lockConversation()
-        await issuePage.acceptLockConversation()
-        expect(await issuePage.getTextLockConversation()).not.toEqual(lockText)
-    })
-
-    it('#9 Закрытие задачи', async () => {
-        await browser.url(issue.url)
-        await issuePage.closeIssue()
-        await closeIssuePage.open()
-        expect(await closeIssuePage.issueIsExsist(issue)).toEqual(true)
-    })
-
-    it('#10 Удаление задачи', async () => {
-        await browser.url(issue.url)
-        await issuePage.deleteIssue()
-        await issuePage.acceptDeleteIssue()
-        await closeIssuePage.open()
-        expect(await closeIssuePage.issueIsExsist(issue)).toEqual(false)
-    })
-
-    // afterEach(async () => {
-    //     // runs after each test in this block
-    // })
-
-    // after(async () => {
-    //     // runs once after the last test in this block
-    // })
 })
