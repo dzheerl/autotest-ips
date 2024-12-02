@@ -1,4 +1,6 @@
-export const config: WebdriverIO.Config = {   
+import { getSpecs } from "./common/getSpecs";
+
+export const config: WebdriverIO.Config = {
     autoCompileOpts: {
         autoCompile: true,
         tsNodeOpts: {
@@ -6,7 +8,7 @@ export const config: WebdriverIO.Config = {
             project: './tsconfig.json'
         }
     },
-    specs: ['./src/**/*.test.ts'],
+    specs: ['./src/**/*.test.ts'], //getSpecs()
     maxInstances: 5,
     capabilities: [{
         browserName: 'chrome',
@@ -15,7 +17,7 @@ export const config: WebdriverIO.Config = {
         },
         acceptInsecureCerts: true
     }],
-    logLevel: 'error',
+    logLevel: 'error', //trace, debug, info, warn, error, silent
     waitforTimeout: 20000,
     connectionRetryTimeout: 60000,
     connectionRetryCount: 3,

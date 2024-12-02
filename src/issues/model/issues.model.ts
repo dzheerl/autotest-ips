@@ -1,18 +1,26 @@
 import { getRandom } from "../../common/tools"
+import { LabelModel } from "./label.model"
 
 type IssueModel = {
     title: string,
-    description?: string,
+    body?: string,
     comment?: string,
-    url?: string,
+    labels?: LabelModel[],
+    htmlUrl?: string,
+    id?: number
 }
 
+
 function createIssuesModel(data?: Partial<IssueModel>): IssueModel {
-    return {
+    const issue: IssueModel = {
         title: data?.title ?? getRandom(255),
-        description: data?.description ?? getRandom(255),
-        comment: data?.comment ?? getRandom(255)
+        body: data?.body,
+        labels: data?.labels,
+        comment: data?.comment,
+        htmlUrl: data?.htmlUrl,
     }
+
+    return issue
 }
 
 export {

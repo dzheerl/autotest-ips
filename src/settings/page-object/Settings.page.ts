@@ -247,6 +247,8 @@ class SettingsPage extends PageObject {
     private getUploadPhoto(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$("//*[@for='avatar_upload']")
     }
+
+
 }
 
 async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> {

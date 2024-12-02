@@ -9,6 +9,8 @@ type GetUserResponse = {
     email: string
 }
 
+
+
 class UserApiService {
     public static async getUser(): Promise<GetUserResponse> {
         const userApiProvider: UserApiProvider = new UserApiProvider()

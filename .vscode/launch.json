@@ -1,23 +1,44 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "local - chrome",
-            "type": "node",
-            "request": "launch",
-            "args": ["src/wdio.conf.ts", "--spec", "${relativeFile}"],
-            "cwd": "${workspaceFolder}",
-            "autoAttachChildProcesses": true,
-            "program": "${workspaceRoot}/node_modules/@wdio/cli/bin/wdio.js",
-            "console": "integratedTerminal",
-          },
-          {
-            "name": "ts-run",
-            "type": "node",
-            "request": "launch",
-            "runtimeArgs": ["-r", "ts-node/register"],
-            "args": ["${relativeFile}"],
-            "console": "integratedTerminal",
-          }
-    ]
-} 
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "local - chrome",
+      "type": "node", //всегда выбираем потому что запуск на nodejs
+      "request": "launch", //обычно всегда launch
+      "args": [
+        "src/wdio.conf.ts",
+        "--spec",
+        "${relativeFile}"
+      ], //
+      "cwd": "${workspaceFolder}", //всегда сделан по умолчанию и его можно указывать либо не указывать
+      "autoAttachChildProcesses": true, //всегда по умолчанию true 
+      "program": "${workspaceRoot}/node_modules/@wdio/cli/bin/wdio.js", //
+      "console": "integratedTerminal",
+    },
+    {
+      "name": "local - chrome - all",
+      "type": "node", //всегда выбираем потому что запуск на nodejs
+      "request": "launch", //обычно всегда launch
+      "args": [
+        "src/wdio.conf.ts"
+      ], //
+      "cwd": "${workspaceFolder}", //всегда сделан по умолчанию и его можно указывать либо не указывать
+      "autoAttachChildProcesses": true, //всегда по умолчанию true 
+      "program": "${workspaceRoot}/node_modules/@wdio/cli/bin/wdio.js", //
+      "console": "integratedTerminal",
+    },
+    {
+      "name": "ts-run",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${relativeFile}"
+      ],
+      "console": "integratedTerminal",
+    }
+  ]
+}

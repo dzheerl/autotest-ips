@@ -1,6 +1,7 @@
 type CreateTeamRequest = {
     description?: string,
-    name: string
+    name: string,
+    id?: number
 }
 
 export {

@@ -1,6 +1,5 @@
 import { ChainablePromiseElement } from 'webdriverio'
 import { PageObject } from '../../page-objects/PageObjects'
-import { IssueData } from '../data/issues.data'
 import { IssueModel } from '../model/issues.model'
 
 class CloseIssuesPage extends PageObject {

@@ -38,6 +38,14 @@ class GitAPIProvider {
         }
         return axios(config)
     }
+
+    protected async sendRequest2<T>(config: AxiosRequestConfig): Promise<number> { //T - это дженерик , нужно почитать 
+        if (this.isSuccesfulResponse) {
+            config[`validateStatus`] = status => Boolean(status)
+        }
+        const response = await axios(config);
+        return response.status; // Возвращаем только статус
+    }
 }
 
 export {

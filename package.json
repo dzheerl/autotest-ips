@@ -18,5 +18,8 @@
     "scripts": {
         "wdio": "wdio run src/wdio.conf.ts",
         "ts-build": "tsc --build"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5"
     }
 }
