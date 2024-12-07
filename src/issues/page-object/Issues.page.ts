@@ -1,15 +1,17 @@
 import { ChainablePromiseElement } from 'webdriverio'
 import { PageObject } from '../../page-objects/PageObjects'
 import { IssueModel } from '../model/issues.model'
+import { Reporter } from '../../common/reporter/Reporter'
 
 class IssuesPage extends PageObject {
-    protected url: string = 'https://github.com/TestUserIps6/qwert123/issues'
+    protected url: string = 'https://github.com/TestUserIps7/qwert123/issues'
 
     constructor(browser: WebdriverIO.Browser) {
         super(browser)
     }
 
     public async createIssue(issue: IssueModel): Promise<void> {
+        Reporter.addStep('Подождать создания задачи')
         await this.open()
         await this.clickButtonNewIssue()
         await this.setTitleNewIssue(issue)
@@ -18,6 +20,7 @@ class IssuesPage extends PageObject {
     }
 
     public async clickButtonNewIssue(): Promise<void> {
+        Reporter.addStep('Нажать на кнопку создания задачи New Issue')
         await this.getButtonNewIssue().waitForClickable({ //ставить clickable
             timeoutMsg: 'Button New Issue was not Clickable'
         })
@@ -26,6 +29,7 @@ class IssuesPage extends PageObject {
 
 
     public async setTitleNewIssue(issue: IssueModel): Promise<void> { // вопрос
+        Reporter.addStep(`Ввод titile: ${issue.title}`)
         await this.getTitleForm().waitForDisplayed({
             timeoutMsg: 'Title form was not displayed'
         })
@@ -34,6 +38,7 @@ class IssuesPage extends PageObject {
 
 
     public async setDescriptionNewIssueForm(issue: IssueModel): Promise<void> { // Вопрос: здесь нужно использовать модель или можно вот так
+        Reporter.addStep(`Ввод description: ${issue.body}`)
         await this.getDescriptionForm().waitForDisplayed({
             timeoutMsg: 'Description form was not displayed'
         })
@@ -41,6 +46,7 @@ class IssuesPage extends PageObject {
     }
 
     public async clickButtonSubmitNewIssue(): Promise<void> {
+        Reporter.addStep('Нажать на кнопку подтверждения создания задачи New Issue')
         await this.getButtonSubmitNewIssue().waitForClickable({
             timeoutMsg: 'Submit New Issue Button was not displayed'
         })
@@ -48,6 +54,7 @@ class IssuesPage extends PageObject {
     }
 
     public async setSearch(issue: IssueModel): Promise<void> {
+        Reporter.addStep(`Поиск в поле поиска задачи: ${issue.title}`)
         await this.getIssueSearch().waitForDisplayed({
             timeoutMsg: 'Title Issue was not Displayed',
         })
@@ -56,10 +63,12 @@ class IssuesPage extends PageObject {
     }
 
     public async getLabelValue(nameLabel: string): Promise<boolean> {
+        Reporter.addStep('Получить название label')
         return await this.getLabel(nameLabel).isExisting()
     }
 
     public async isIssueExsist(issue: IssueModel): Promise<boolean> {
+        Reporter.addStep(`Проверка, что созданная задача с названием ${issue.title}`)
         return this.getTitleOpenIssue(issue.title).isExisting()
     }
 

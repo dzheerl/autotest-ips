@@ -1,6 +1,7 @@
 import { ChainablePromiseElement } from 'webdriverio'
 import { PageObject } from '../../page-objects/PageObjects'
 import { IssueModel } from '../model/issues.model'
+import { Reporter } from '../../common/reporter/Reporter'
 
 class IssuePage extends PageObject {
     constructor(browser: WebdriverIO.Browser, url: string) {
@@ -9,36 +10,42 @@ class IssuePage extends PageObject {
     }
 
     public async waitForDisplayedButtonNewIssue(): Promise<void> {
+        Reporter.addStep('Подождать отображения кнопки New Issue')
         await this.getButtonNewIssue().waitForDisplayed({
             timeoutMsg: 'Button New Issue was not displayed',
         })
     }
 
     public async waitForDisplayedgetTitleForm(): Promise<void> {
+        Reporter.addStep('Подождать отображения поля Title')
         await this.getTitleForm().waitForDisplayed({
             timeoutMsg: 'Title form was not displayed',
         })
     }
 
     public async waitForDisplayedgetDescriptionForm(): Promise<void> {
+        Reporter.addStep('Подождать отображения поля Description')
         await this.getDescriptionForm().waitForDisplayed({
             timeoutMsg: 'Description form was not displayed',
         })
     }
 
     public async waitForDisplayedSubmitNewIssueButton(): Promise<void> {
+        Reporter.addStep('Подождать отображения кнопки New Issue')
         await this.getButtonSubmitNewIssue().waitForDisplayed({
             timeoutMsg: 'Submit New Issue Button was not displayed',
         })
     }
 
     public async waitForDisplayedTitleIssue(): Promise<void> {
+        Reporter.addStep('Подождать отображения Title')
         await this.getTitileIssue().waitForDisplayed({
             timeoutMsg: 'Title Issue was not displayed',
         })
     }
 
     public async getTitleIssueText(): Promise<string> {
+        Reporter.addStep('Получить значение Title')
         await this.getTitileIssue().waitForDisplayed({
             timeoutMsg: 'Title Issue was not displayed',
         })
@@ -46,6 +53,7 @@ class IssuePage extends PageObject {
     }
 
     public async getFirstDescriptionText(): Promise<string> {
+        Reporter.addStep('Получить значение Description')
         await this.getFirstDescriptionIssuse().waitForDisplayed({
             timeoutMsg: 'Description Issue was not displayed',
         })
@@ -53,6 +61,7 @@ class IssuePage extends PageObject {
     }
 
     public async getLastCommentText(): Promise<string> {
+        Reporter.addStep('Получить значение комментария')
         await this.browser.pause(1000)
         await this.getLastComment().waitForDisplayed({
             timeoutMsg: 'Description Issue was not displayed',
@@ -61,6 +70,7 @@ class IssuePage extends PageObject {
     }
 
     public async clickEditTitle(): Promise<void> {
+        Reporter.addStep('Подождать отображения кнопки Edit Title')
         await this.getEditTitle().waitForClickable({
             timeoutMsg: 'Title Issue was not Clickable',
         })
@@ -68,6 +78,7 @@ class IssuePage extends PageObject {
     }
 
     public async getTitleIssueValue(): Promise<string> {
+        Reporter.addStep('Получить значение измененного title')
         await this.getTitleIssueForm().waitForDisplayed({
             timeoutMsg: 'Title Issue was not Displayed',
         })
@@ -75,6 +86,7 @@ class IssuePage extends PageObject {
     }
 
     public async setTitleIssue(issue: IssueModel): Promise<void> {
+        Reporter.addStep(`Ввод значение в title задачи ${issue.title}`)
         await this.getTitleIssueForm().waitForDisplayed({
             timeoutMsg: 'Title Issue was not Displayed',
         })
@@ -82,6 +94,7 @@ class IssuePage extends PageObject {
     }
 
     public async updateTitle(): Promise<void> {
+        Reporter.addStep('Нажать на кнопку обновления задачи')
         await this.getTitleIssueForm().waitForClickable({
             timeoutMsg: 'Title Issue was not Clickable',
         })
@@ -89,6 +102,7 @@ class IssuePage extends PageObject {
     }
 
     public async getTextTimeLineItemLast(): Promise<string> {
+        Reporter.addStep('Получить последний элемент истории задачи')
         await this.getTimeLineItemLastElement().waitForDisplayed({
             timeoutMsg: 'Time Line Item Last Element was not Displayed',
         })
@@ -96,6 +110,7 @@ class IssuePage extends PageObject {
     }
 
     public async clickKebabMenuDescription(): Promise<void> {
+        Reporter.addStep('Вызов контекстного меню Description')
         await this.getKebabDescription().waitForClickable({
             timeoutMsg: 'Kebab Description Issue was not Clickable',
         })
@@ -103,6 +118,7 @@ class IssuePage extends PageObject {
     }
 
     public async clickEditDescription(): Promise<void> {
+        Reporter.addStep('Вызов редактировния description')
         await this.getButtonEditDescription().waitForClickable({
             timeoutMsg: 'Button Edit Description Issue was not Clickable',
         })
@@ -111,6 +127,7 @@ class IssuePage extends PageObject {
     }
 
     public async setUpdatedDescription(issue: IssueModel): Promise<void> {
+        Reporter.addStep('Сохранить внесенные изменения в description')
         await this.getTextAreaDescription().waitForDisplayed({
             timeoutMsg: 'Text Area Description Issue was not Displayed',
         })
@@ -118,6 +135,7 @@ class IssuePage extends PageObject {
     }
 
     public async getDescriptionText(): Promise<string> {
+        Reporter.addStep('Получить текст description после изменений')
         await this.getDescription().waitForDisplayed({
             timeoutMsg: 'Description Issue was not Displayed',
         })
@@ -125,6 +143,7 @@ class IssuePage extends PageObject {
     }
 
     public async getAltImg(): Promise<string> {
+        Reporter.addStep('Получить название загруженного изображения')
         await this.getAttachImg().waitForExist({
             timeoutMsg: 'Description Issue was not Displayed',
         })
@@ -132,6 +151,7 @@ class IssuePage extends PageObject {
     }
 
     public async saveUpdatedDescription(): Promise<void> {
+        Reporter.addStep('Сохранить внесенные изменения в description')
         await this.getButtonUpdatedDescription().waitForClickable({
             timeoutMsg: 'save updated description was not Clickable',
         })
@@ -139,10 +159,12 @@ class IssuePage extends PageObject {
     }
 
     public async fileAtachErrorExist(): Promise<boolean> { //добавить is (нэйминг), 1- глагол
+        Reporter.addStep('Получить сообщение об ошибке, если загружен невалидный файл')
         return await this.getFileAttachError().isExisting()
     }
 
     public async uploadFile(filePath: string): Promise<void> {
+        Reporter.addStep('Загрузить файл')
         await this.getInputFile().waitForExist({
             timeoutMsg: 'File input field was not existed',
         })
@@ -152,21 +174,35 @@ class IssuePage extends PageObject {
         await this.browser.pause(3000)
     }
 
+    public async uploadFileComment(filePath: string): Promise<void> {
+        Reporter.addStep('Загрузить файл в комментарий')
+        await this.getInputFileComment().waitForExist({
+            timeoutMsg: 'File input field was not existed',
+        })
+        await showHiddenFileInputComment(this.browser)
+        const file: string = await this.browser.uploadFile(filePath)
+        await this.getInputFileComment().setValue(file)
+        await this.browser.pause(3000)
+    }
+
     public async getTextLockConversation(): Promise<string> {
+        Reporter.addStep('Подождать кнопку блокировки задачи')
         await this.getButtonLockConversation().waitForDisplayed({
-            timeoutMsg: 'Description Issue was not displayed',
+            timeoutMsg: 'Lock Conversation was not displayed',
         })
         return this.getButtonLockConversation().getText()
     }
 
     public async getTextUnlockConversation(): Promise<string> {
+        Reporter.addStep('Подождать кнопку разблокировки задачи')
         await this.getButtonLockConversation().waitForDisplayed({
-            timeoutMsg: 'Description Issue was not displayed',
+            timeoutMsg: 'UnLock Conversation was not displayed',
         })
         return this.getButtonLockConversation().getText()
     }
 
     public async lockConversation(): Promise<void> {
+        Reporter.addStep('Блокировать задачу')
         await this.getButtonLockConversation().waitForClickable({
             timeoutMsg: 'lock Conversation was not Clickable',
         })
@@ -174,6 +210,7 @@ class IssuePage extends PageObject {
     }
 
     public async acceptLockConversation(): Promise<void> {
+        Reporter.addStep('Подтверить блкировку задачи')
         await this.getButtonAcceptLockConversation().waitForClickable({
             timeoutMsg: 'Accept lock Conversation was not Clickable',
         })
@@ -181,6 +218,7 @@ class IssuePage extends PageObject {
     }
 
     public async closeIssue(): Promise<void> {
+        Reporter.addStep('Закрыть задачи')
         await this.getButtonCloseIssue().waitForClickable({
             timeoutMsg: 'Button Close Issue was not Clickable',
         })
@@ -188,6 +226,7 @@ class IssuePage extends PageObject {
     }
 
     public async clickDeleteIssue(): Promise<void> {
+        Reporter.addStep('Удалить задачи')
         await this.getButtonDeleteIssue().waitForDisplayed({
             timeoutMsg: 'Button delete Issue was not Displayed',
         })
@@ -199,6 +238,7 @@ class IssuePage extends PageObject {
 
     public async acceptDeleteIssue(): Promise<void> {
         // await this.browser.pause(500)
+        Reporter.addStep('Подтвердить удаления задачи')
         await this.getAcceptDeleteIssue().waitForClickable({
             timeoutMsg: 'Accept delete Issue was not Clickable',
         })
@@ -206,6 +246,7 @@ class IssuePage extends PageObject {
     }
 
     public async setTextComment(issue: IssueModel): Promise<void> {
+        Reporter.addStep('Получить текст комментария')
         await this.getTextAreaComment().waitForDisplayed({
             timeoutMsg: 'Comment form was not displayed'
         })
@@ -213,10 +254,19 @@ class IssuePage extends PageObject {
     }
 
     public async addComment(): Promise<void> {
+        Reporter.addStep('Добавить комментарий')
         await this.getButtonAddComment().waitForClickable({
             timeoutMsg: 'Button add comment was not Clickable',
         })
         await this.getButtonAddComment().click()
+    }
+
+    public async waitImg(): Promise<void> {
+        Reporter.addStep('Подождать отображение загруженной картинки')
+        await this.getImgComment().waitForDisplayed({
+            timeout: 5000, // Время ожидания (в миллисекундах)
+            timeoutMsg: 'Элемент не загрузился за отведенное время',
+        });
     }
 
     public async deleteIssue(issue: IssueModel): Promise<void> {
@@ -227,6 +277,7 @@ class IssuePage extends PageObject {
     }
 
     public async callLabelMenu(): Promise<void> {
+        Reporter.addStep('Вызов контекстного меню с label')
         await this.getLabelSelectMenu().waitForDisplayed({
             timeoutMsg: 'call label menu was not Displayed',
         })
@@ -238,14 +289,13 @@ class IssuePage extends PageObject {
     }
 
     public async chooseLabel(name: string): Promise<void> {
+        Reporter.addStep('Выбор label')
         await this.getLabelMenuItem(name).waitForClickable({
             timeoutMsg: 'Label menu item was not Clickable',
         })
         await this.getLabelMenuItem(name).click()
         await this.browser.$('body').click()
         await this.browser.pause(3000)
-        // await this.browser.refresh()
-        // await this.waitChooseLabel().waitForDisplayed()
     }
 
     private getButtonNewIssue(): ChainablePromiseElement<WebdriverIO.Element> {
@@ -324,6 +374,10 @@ class IssuePage extends PageObject {
         return this.browser.$("(//*[@type='file'])[1]")
     }
 
+    private getInputFileComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("(//*[@type='file'])[2]")
+    }
+
     private getButtonLockConversation(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$("//*[@class='discussion-sidebar-item']//*[@role='button']")
     }
@@ -363,6 +417,17 @@ class IssuePage extends PageObject {
     private waitChooseLabel(): ChainablePromiseElement<WebdriverIO.Element> {
         return this.browser.$('//div[contains(@class, "js-issue-labels")]/a')
     }
+
+    private getImgComment(): ChainablePromiseElement<WebdriverIO.Element> {
+        return this.browser.$("//*[@target='_blank']/img")
+    }
+}
+
+async function showHiddenFileInputComment(browser: WebdriverIO.Browser): Promise<void> {
+    await browser.execute(() => {
+        const htmlElement = document.querySelector('#fc-new_comment_field') as HTMLElement
+        htmlElement.style.cssText = 'display:block !important; opacity: 1; position: inherit;'
+    })
 }
 
 async function showHiddenFileInput(browser: WebdriverIO.Browser): Promise<void> {

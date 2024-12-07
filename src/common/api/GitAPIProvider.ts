@@ -32,7 +32,7 @@ class GitAPIProvider {
         }
     }
 
-    protected sendRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> { //T - это дженерик , нужно почитать 
+    public sendRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> { //T - это дженерик , нужно почитать 
         if (this.isSuccesfulResponse) {
             config[`validateStatus`] = status => Boolean(status)
         }

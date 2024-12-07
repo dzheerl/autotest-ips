@@ -4,10 +4,18 @@ import { IssueModel } from "../model/issues.model";
 
 class IssueAPIProvider extends GitAPIProvider {
     public createIssue<T>(owner: string, repo: string, data: IssueModel): Promise<AxiosResponse<T>> {
+        let body: string
+        if (data.title != '') {
+            body = JSON.stringify(data)
+        } else {
+            body = `{
+                "title":"hello,
+            }`
+        }
         const config: AxiosRequestConfig = this.configureRequest(
             `/repos/${owner}/${repo}/issues`,
             'POST',
-            JSON.stringify(data)
+            body
         )
         return this.sendRequest(config)
     }

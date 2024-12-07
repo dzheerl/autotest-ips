@@ -1,7 +1,7 @@
 import { IssueModel } from "../model/issues.model"
 import { LabelModel } from "../model/label.model"
 
-const OWNER: string = 'TestUserIps6'
+const OWNER: string = 'TestUserIps7'
 const REPO: string = 'qwert123'
 
 const REPO_WITHOUT_ISSUE: string = 'dontissue'

@@ -1,19 +1,30 @@
 describe('test describe', () => {
-    before(async () => {
-        // runs once before the first test in this block
-    })
+    let checkString: string
+
+    // before(async () => {
+
+    // })
 
     beforeEach(async () => {
-        // runs before each test in this block
+        checkString = 'hello'
     })
 
-    it('test it', async () => {
-        await browser.url(`http://google.com/`)
-        await browser.pause(3000)
+    describe('test descibe include', () => {
+        it('test it', async () => {
+            checkString = checkString + ' world'
+            console.log(checkString)
+        })
+    })
+
+    describe('test descibe include2', () => {
+        it('test it', async () => {
+            checkString = checkString + ' world2'
+            console.log(checkString)
+        })
     })
 
     afterEach(async () => {
-        // runs after each test in this block
+        console.log(checkString)
     })
 
     after(async () => {

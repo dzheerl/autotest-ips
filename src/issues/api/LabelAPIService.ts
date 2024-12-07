@@ -1,9 +1,7 @@
-//Сервис для подготовки (создаю label issue )
-
 import { AxiosResponse } from "axios"
 import { LabelApiProvider } from "./LabelAPIProviders"
 import { LabelModel } from "../model/label.model"
-import { LabelApiDataProvider, createLabelRequest } from "./labelAPIDataProvider"
+import { LabelApiDataProvider, createLabelRequest } from "./LabelAPIDataProvider"
 
 type createLabelResponse = {
     name: string,

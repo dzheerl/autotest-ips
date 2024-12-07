@@ -1,11 +1,18 @@
 import { AxiosResponse } from "axios"
-import { IssueModel } from "../model/issues.model"
+import { ArrayIssue, IssueModel } from "../model/issues.model"
 import { IssueAPIProvider } from "./IssueAPIProvider"
-import { IssueAPIDataProvider, issueRequest } from "./IssueAPIDataProvider"
+import { IssueAPIDataProvider, OWNER, REPO, issueRequest } from "./IssueAPIDataProvider"
 
-type createIssueResponse = {
+type createIssueResponse = { //типы прописными буквами
     number: number,
-    html_url: string
+    html_url: string,
+    id: number
+}
+
+type IssueListResponse = {
+    id: number
+    title: string,
+    test: string
 }
 
 class IssueAPIService {
@@ -15,8 +22,14 @@ class IssueAPIService {
         const response: AxiosResponse<createIssueResponse> = await issueAPIProvider.createIssue(owner, repo, data)
         return response.data
     }
+
+    public static async getIssues(owner: string, repo: string): Promise<IssueListResponse[]> {
+        const issueAPIProvider: IssueAPIProvider = new IssueAPIProvider()
+        const getIssue: AxiosResponse<IssueListResponse[]> = await issueAPIProvider.getIssues(owner, repo)
+        return getIssue.data
+    }
 }
 
 export {
-    IssueAPIService, createIssueResponse
+    IssueAPIService, createIssueResponse, IssueListResponse
 }

@@ -24,9 +24,9 @@ describe('Работа с задачей', () => {
 
     describe('Работа с задачей', () => {
         beforeEach(async () => {
-            issuePage = new IssuePage(browser)
+            issuePage = new IssuePage(browser, 'https://github.com/TestUserIps7/qwert123/issues')
             issuesPage = new IssuesPage(browser)
-            issue = createIssuesModel({ description: 'gfgfdgds', comment: 'tgrhghg' })
+            issue = createIssuesModel({ body: 'gfgfdgds', comment: 'tgrhghg' })
         })
 
         describe('Создание задачи и работа с задачей', () => {
@@ -36,7 +36,7 @@ describe('Работа с задачей', () => {
                     await issuesPage.clickButtonNewIssue()
                     await issuesPage.setTitleNewIssue(issue)
                     await issuesPage.clickButtonSubmitNewIssue() //исправить название (не исп клик в названии)
-                    issue.url = await browser.getUrl()
+                    issue.htmlUrl = await browser.getUrl()
                     await issuePage.open()
                     expect(await issuesPage.isIssueExsist(issue)).toEqual(true)
                 })
@@ -45,7 +45,7 @@ describe('Работа с задачей', () => {
             describe('Работа с задачей', () => {
                 beforeEach(async () => {
                     await issuesPage.createIssue(issue)
-                    issue.url = await browser.getUrl()
+                    issue.htmlUrl = await browser.getUrl()
                 })
 
                 it('#2 Проверка, что созданная задача есть в списке задач', async () => {
@@ -72,7 +72,7 @@ describe('Работа с задачей', () => {
 
                 it('#5 Редактирование Description задачи', async () => {
                     let oldtDescription: string = await issuePage.getDescriptionText()
-                    issue.description = getRandom(256)
+                    issue.body = getRandom(256)
                     await issuePage.clickKebabMenuDescription()
                     await issuePage.clickEditDescription()
                     await issuePage.setUpdatedDescription(issue)
@@ -126,7 +126,7 @@ describe('Работа с задачей', () => {
     describe('Удаление задачи', () => {
         before(async () => {
             await issuesPage.createIssue(issue)
-            issue.url = await browser.getUrl()
+            issue.htmlUrl = await browser.getUrl()
         })
 
         it('#11 Удаление задачи', async () => {

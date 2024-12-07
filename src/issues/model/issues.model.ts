@@ -1,6 +1,8 @@
 import { getRandom } from "../../common/tools"
 import { LabelModel } from "./label.model"
 
+type ArrayIssue = IssueModel[]
+
 type IssueModel = {
     title: string,
     body?: string,
@@ -9,7 +11,6 @@ type IssueModel = {
     htmlUrl?: string,
     id?: number
 }
-
 
 function createIssuesModel(data?: Partial<IssueModel>): IssueModel {
     const issue: IssueModel = {
@@ -25,6 +26,7 @@ function createIssuesModel(data?: Partial<IssueModel>): IssueModel {
 
 export {
     IssueModel,
+    ArrayIssue,
     createIssuesModel
 }
 
